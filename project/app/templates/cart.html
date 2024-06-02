@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .item-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fafafa;
+        }
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .item-details img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .item-details h4, .item-details p {
+            margin: 5px 0;
+        }
+        #delete {
+            margin: 10px 0;
+        }
+        h4 {
+           margin: 0%;
+        }
+ .paybtn,.delete{
+            
+    background-color: #3498db; /* Primary color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    padding: 15px 30px; /* Padding */
+    text-align: center; /* Center text */
+    text-decoration: none; /* Remove underline */
+    display: inline-block; /* Inline-block for margins */
+    font-size: 16px; /* Font size */
+    margin: 10px 2px; /* Margin */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 8px; /* Rounded corners */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transitions */
+}
+
+/* Hover effect */
+.paybtn,.delete:hover {
+    background-color: #2980b9; /* Darker shade of primary color */
+    transform: scale(1.05); /* Slightly enlarge button */
+}
+
+
+.paybtn,.delete:active {
+    background-color: #1c5985; /* Even darker shade for active state */
+    transform: scale(1); /* Return to original size */
+}
+       
+    </style>
+</head>
+<body>
+    <div class="items-wrapper" style="display: flex; flex-wrap: wrap; justify-content: center;">
+        {% for i in data %}
+        <div class="item-container">
+            <div class="item-details">
+                <img src="{{media_url}}{{i.Image}}" alt="{{i.name}}">
+                <h4>{{i.name}}</h4>
+                <p>{{i.description}}</p>
+                <p>ID: {{i.id}}</p>
+                <div class="delete">
+                    <a href="{% url 'delete' pk=i.id %}">Delete</a>
+                </div>
+            </div>
+        
+        </div> 
+        {% endfor %}
+        <br>
+<br>       
+<input type="number" name="amount" value="{{amount}}" hidden>
+ <div class="card" style="width: 20rem; height: 20rem;">
+    <form action="{% url 'payment' %}" method="post">
+        {% csrf_token%}
+        <h1>Total Amount :</h1>
+        <p class="card-text">{{TotalAmount}}</p>
+        <input type="number" name="amount" value="{{TotalAmount}}" hidden>
+        <button class="paybtn"> Pay </button>
+    </form>
+    {% if payment %}
+            <form action="{% url 'payment-status' %}" method="post">
+                {% csrf_token %}
+                <script
+                        src="https://checkout.razorpay.com/v1/checkout.js"
+                        data-key="rzp_test_p1r1Cd4QBQtkIE"
+                        data-amount="{{ payment.amount }}"
+                        data-currency="{{ payment.currency }}"
+                        data-order_id="{{ payment.id }}"
+                        data-buttontext="Pay with Razorpay"
+                        data-name="Shreya Ecom"
+                        data-description="Thanku for visiting My Site"
+                        data-image="https://example.com/your_logo.jpg"
+                        data-prefill.name="Shreya Dwivedi"
+                        data-prefill.email="shreyadwivedi477@gmail.com"
+                        data-theme.color="#F37254"
+                ></script>
+                <input type="hidden" custom="Hidden Element" name="hidden">
+            </form>
+        {% endif %}
+    </div>
+    
+    
+
+</body>
+</html>
